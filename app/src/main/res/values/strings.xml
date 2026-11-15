@@ -4,5 +4,14 @@
     <string name="notif_channel">Controle de volume</string>
     <string name="notif_title">Controle individual ativo</string>
     <string name="notif_text">Aplicando o volume de cada app</string>
-    <string name="accessibility_description">Usado só para saber qual app está na tela e para fazer as teclas de volume mudarem o volume apenas desse app. Não lê o conteúdo da tela.</string>
+    <string name="notif_text_floating">Toque em \"Abrir painel\" para ajustar o volume de cada app</string>
+    <string name="action_open_panel">Abrir painel</string>
+    <string name="action_stop_panel">Parar painel</string>
+    <string name="panel_needs_permission">Falta a permissão \"Sobrepor a outros apps\". Abra o Volume Control e ligue o painel flutuante.</string>
+    <string name="panel_failed">Não foi possível mostrar o painel neste momento.</string>
+    <string name="tile_label">Volume por app</string>
+    <string name="tile_not_ready">Indisponível</string>
+    <string name="shortcut_short">Painel rápido</string>
+    <string name="shortcut_long">Volume dos apps que estão tocando</string>
+    <string name="accessibility_description">Opcional. Usado só para saber qual app está na tela (apenas o nome do app) e para as teclas de volume mudarem o volume apenas desse app. Não lê o conteúdo da tela, não guarda nem envia nada. Para desligar, use a chave no app ou desative aqui.</string>
 </resources>

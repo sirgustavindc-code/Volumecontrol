@@ -1,13 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Mantém o serviço que aplica os volumes rodando em segundo plano -->
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
-    <!-- Notificação fixa do serviço (Android 13+) -->
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!--
+      Permissões (todas explicadas no README). O app NÃO tem permissão de Internet:
+      nada sai do aparelho.
+    -->
 
-    <!-- Ver os apps com ícone de launcher e o Shizuku, sem precisar de QUERY_ALL_PACKAGES -->
+    <!-- Manter o serviço que aplica os volumes enquanto você usa o celular -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <!-- Android 14+ exige declarar o tipo do serviço em primeiro plano; nenhum tipo específico
+         (mídia, localização...) descreve este caso, então usa-se "uso especial" -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <!-- Mostrar a notificação fixa do serviço (Android 13+, pedida na primeira abertura) -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Painel flutuante por cima de jogos e apps. Permissão especial: não aparece como janela de
+         pedido; o usuário a concede em Configurações > Apps > Acesso especial > Sobrepor a outros apps.
+         Só é pedida quando o painel flutuante é ligado. -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <!-- Ver os apps com ícone na tela inicial (para listá-los) e o app Shizuku, sem a
+         permissão ampla QUERY_ALL_PACKAGES -->
     <queries>
         <intent>
             <action android:name="android.intent.action.MAIN" />
@@ -32,7 +44,21 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <!-- Atalho "Painel rápido" ao segurar o ícone do app -->
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
         </activity>
+
+        <!-- Painel rápido: folha com os apps que estão tocando -->
+        <activity
+            android:name=".ui.QuickPanelActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:label="@string/shortcut_short"
+            android:launchMode="singleTask"
+            android:taskAffinity=""
+            android:theme="@style/Theme.VolumeControl.Panel" />
 
         <service
             android:name=".service.VolumeService"
@@ -40,10 +66,22 @@
             android:foregroundServiceType="specialUse">
             <property
                 android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
-                android:value="Aplica o volume individual de cada aplicativo enquanto ele toca áudio" />
+                android:value="Aplica o volume individual de cada aplicativo e mantém o painel flutuante de volume disponível pela notificação" />
         </service>
 
-        <!-- Detecta o app em primeiro plano e captura as teclas de volume -->
+        <!-- Botão dos Ajustes rápidos (o usuário o adiciona ao painel; só o sistema pode chamá-lo) -->
+        <service
+            android:name=".service.QuickTileService"
+            android:exported="true"
+            android:icon="@drawable/ic_notification"
+            android:label="@string/tile_label"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+
+        <!-- Opcional: descobre o app em uso e captura as teclas de volume. Só o sistema pode vinculá-lo. -->
         <service
             android:name=".service.VolumeKeysService"
             android:exported="true"
@@ -57,7 +95,7 @@
                 android:resource="@xml/accessibility_service_config" />
         </service>
 
-        <!-- Necessário para o Shizuku entregar a conexão ao app -->
+        <!-- Necessário para o Shizuku entregar a conexão ao app (declaração oficial do Shizuku) -->
         <provider
             android:name="rikka.shizuku.ShizukuProvider"
             android:authorities="${applicationId}.shizuku"

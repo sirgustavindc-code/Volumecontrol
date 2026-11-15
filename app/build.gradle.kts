@@ -10,10 +10,12 @@ android {
 
     defaultConfig {
         applicationId = "com.volumecontrol.app"
-        minSdk = 30
+        // Android 14 é o mínimo: só 14 e 15 foram considerados na revisão (o aparelho alvo é o
+        // Galaxy A15 5G). As funções internas de áudio não foram verificadas em versões anteriores.
+        minSdk = 34
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = 3
+        versionName = "1.0.2"
     }
 
     buildTypes {
@@ -56,4 +58,6 @@ dependencies {
     implementation("androidx.compose.foundation:foundation")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material:material-icons-core")
+
+    testImplementation("junit:junit:4.13.2")
 }

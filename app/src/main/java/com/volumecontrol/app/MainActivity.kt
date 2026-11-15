@@ -10,6 +10,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.volumecontrol.app.data.Settings
 import com.volumecontrol.app.engine.ShizukuMonitor
+import com.volumecontrol.app.service.OverlayState
 import com.volumecontrol.app.ui.MainScreen
 import com.volumecontrol.app.ui.VolumeControlTheme
 
@@ -37,7 +38,8 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        // O usuário pode ter ligado o Shizuku ou concedido a permissão enquanto estava fora.
+        // O usuário pode ter ligado o Shizuku ou concedido permissões enquanto estava fora.
         ShizukuMonitor.refresh()
+        OverlayState.refresh(this)
     }
 }

@@ -3,7 +3,6 @@ package com.volumecontrol.app.data
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Build
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.core.graphics.drawable.toBitmap
@@ -21,12 +20,7 @@ object AppRepository {
     fun load(context: Context): List<AppEntry> {
         val pm = context.packageManager
         val intent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER)
-        val resolved = if (Build.VERSION.SDK_INT >= 33) {
-            pm.queryIntentActivities(intent, PackageManager.ResolveInfoFlags.of(0L))
-        } else {
-            @Suppress("DEPRECATION")
-            pm.queryIntentActivities(intent, 0)
-        }
+        val resolved = pm.queryIntentActivities(intent, PackageManager.ResolveInfoFlags.of(0L))
         val seen = HashSet<String>()
         return resolved.mapNotNull { ri ->
             val pkg = ri.activityInfo.packageName
